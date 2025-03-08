@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={nunito.className}>
-          <Modal />
+          <Modal title="Hello World" isOpen />
           <Navbar />
         {children}
       </body>
