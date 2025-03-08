@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useState } from "react";
+import { IoMdClose } from 'react-icons/io';
 
 interface ModalProps {
   isOpen?: boolean;
@@ -23,9 +24,10 @@ const Modal: React.FC<ModalProps> = ({
   footer,
   actionLabel,
   disabled,
+  secondaryAction,
   secondaryLabel,
 }) => {
-  const [, setShowModal] = useState(isOpen);
+  const [showModal, setShowModal] = useState(isOpen);
 
   useEffect(() => {
     setShowModal(isOpen);
@@ -50,6 +52,13 @@ const Modal: React.FC<ModalProps> = ({
     onSubmit?.();
   }, [disabled, onSubmit]);
 
+  const handleSecondaryAction = useCallback(() => {
+    if (disabled || !secondaryAction) {
+      return;
+    }
+
+    secondaryAction();
+  }, [disabled, secondaryAction]);
 
   if (!isOpen) {
     return null;
@@ -58,43 +67,22 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-neutral-800/70">
-        <div className="relative w-auto my-6 mx-auto max-w-3xl">
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-              <h3 className="text-3xl font-semibold">
-                {title}
-              </h3>
-              <button
-                className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={handleClose}
-              >
-                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                  ×
-                </span>
-              </button>
+        <div className="relative w-full md:w-4/6 lg:w-3/6 xl:w-2/5 my-6 mx-auto h-full lg:h-auto md:h-auto">
+          <div
+            className={`translate duration-300 h-full ${
+              showModal ? 'translate-y-0' : 'translate-y-full'
+            } ${showModal ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <div className="translate h-full lg:h-auto md:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex items-center p-6 rounded-t justify-center relative border-b-[1px]">
+                <button onClick={handleClose} className="p-1 border-0 hover:opacity-70 transition absolute left-9">
+                    <IoMdClose size={10} />
+                </button>
+                <div className="text-lg font-semibold">
+                    {title}
+                </div>
+              </div>
             </div>
-            <div className="relative p-6 flex-auto">
-              {body}
-            </div>
-            <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-              <button
-                className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
-                type="button"
-                onClick={handleClose}
-                disabled={disabled}
-              >
-                {secondaryLabel}
-              </button>
-              <button
-                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
-                type="button"
-                onClick={handleSubmit}
-                disabled={disabled}
-              >
-                {actionLabel}
-              </button>
-            </div>
-            {footer}
           </div>
         </div>
       </div>
